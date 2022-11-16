@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MVC</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MVC.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MVC Client</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown01" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              API 01
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown01">
+                              <a class="dropdown-item" asp-area="" asp-controller="CallAPI" asp-action="GetApi01Resources">Read Resources</a>
+                              <a class="dropdown-item" asp-area="" asp-controller="CallAPI" asp-action="WriteApi01Resources">Write Resources</a>
+                              <div class="dropdown-divider"></div>
+                               <a class="dropdown-item" asp-area="" asp-controller="CallAPI" asp-action="GetApi01User">Read User</a>
+                              <a class="dropdown-item" asp-area="" asp-controller="CallAPI" asp-action="WriteApi01User">Write User</a>
+                            </div>
+                         </li>
+                         <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown02" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              API 02
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown02">
+                              <a class="dropdown-item" asp-area="" asp-controller="CallAPI" asp-action="GetApi02Resources">Read Resources</a>
+                              <a class="dropdown-item" asp-area="" asp-controller="CallAPI" asp-action="WriteApi02Resources">Write Resources</a>
+                              <div class="dropdown-divider"></div>
+                               <a class="dropdown-item" asp-area="" asp-controller="CallAPI" asp-action="GetApi02User">Read User</a>
+                              <a class="dropdown-item" asp-area="" asp-controller="CallAPI" asp-action="WriteApi02User">Write User</a>
+                            </div>
+                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Log out</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <div class="w-50 m-1 p-2 border border-success"><span class="fw-bold">Token expires at: </span><span class="text-danger" id="expire-time"></span></div>
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function() { 
+            var _second = 1000;
+            var _minute = _second * 60;
+            var _hour = _minute * 60;
+            var _day = _hour * 24;
+            var timer;
+            function showRemaining(end) {
+                var now = new Date();
+                var distance = end - now;
+                if (distance < 0) {
+
+                    clearInterval(timer);
+                    $('#expire-time').empty();
+                    $('#expire-time').text('EXPIRED!');
+
+                    return;
+                }
+                var days = Math.floor(distance / _day);
+                var hours = Math.floor((distance % _day) / _hour);
+                var minutes = Math.floor((distance % _hour) / _minute);
+                var seconds = Math.floor((distance % _minute) / _second);
+                var content = days + 'days ' + hours + 'hrs ' + minutes + 'mins ' + seconds + 'secs';
+                $('#expire-time').empty();
+                $('#expire-time').text(content);
+                timer = setInterval(function() { showRemaining(end); }, 1000);
+            }
+            var tokenEpires = null || '@ViewBag.TokenExpires';
+            if (tokenEpires != null) {
+                var end = new Date(tokenEpires);
+                showRemaining(end);
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

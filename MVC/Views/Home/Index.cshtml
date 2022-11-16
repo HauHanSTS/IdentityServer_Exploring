@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    @{
+        if(User.Claims.Any())
+        {
+            <h3 class="m-t-5">Authenticated User</h3>
+            <div class="text-dark">
+                <dl>
+                    @foreach (var claim in User.Claims)
+                    {
+                        <dt>@claim.Type</dt>
+                        <dd>@claim.Value</dd>
+                    }
+                </dl>
+
+                <h2>Properties</h2>
+
+                <dl>
+                    @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
+                    {
+                        <dt>@prop.Key</dt>
+                        <dd>@prop.Value</dd>
+                    }
+                </dl>
+            </div>
+        }
+        else
+        {
+            <div class="text-dark">No data</div>
+        }
+    }
+</div>
